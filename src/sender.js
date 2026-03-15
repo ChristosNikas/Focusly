@@ -2,43 +2,41 @@
 require('dotenv').config();
 const { eventBuffer, allEvents } = require('./tracker');
 
-// ─── Build session summary with Focus Ratio ───────────────────────────────
 function buildSummary(events) {
-  let productiveSecs = 0;
-  let unproductiveSecs = 0;
+  const categoryTotals = {};
   const appTotals = {};
+  let totalSecs = 0;
 
   for (const e of events) {
     const secs = e.durationSecs || 0;
-    if (e.category === 'unproductive') unproductiveSecs += secs;
-    else productiveSecs += secs;
+    totalSecs += secs;
+
+    if (!categoryTotals[e.category]) {
+      categoryTotals[e.category] = { secs: 0, color: e.categoryColor };
+    }
+    categoryTotals[e.category].secs += secs;
 
     if (!appTotals[e.app]) {
-      appTotals[e.app] = { app: e.app, category: e.category, totalSecs: 0 };
+      appTotals[e.app] = { secs: 0, category: e.category, color: e.categoryColor };
     }
-    appTotals[e.app].totalSecs += secs;
+    appTotals[e.app].secs += secs;
   }
-
-  const totalSecs = productiveSecs + unproductiveSecs;
-  const focusRatio = totalSecs > 0
-    ? Math.round((productiveSecs / totalSecs) * 1000) / 10
-    : 0;
 
   return {
     date: new Date().toISOString().split('T')[0],
     totalSecs,
-    productiveSecs,
-    unproductiveSecs,
-    focusRatio,
-    appBreakdown: Object.values(appTotals).sort((a, b) => b.totalSecs - a.totalSecs),
+    categoryTotals,
+    appBreakdown: Object.entries(appTotals)
+      .map(([app, data]) => ({ app, ...data }))
+      .sort((a, b) => b.secs - a.secs),
   };
 }
 
-// ─── Flush — local only ───────────────────────────────────────────────────
 async function flush() {
   eventBuffer.splice(0, eventBuffer.length);
   const summary = buildSummary(allEvents);
-  console.log(`[sender] Focus Ratio: ${summary.focusRatio}%`);
+  console.log(`[sender] Summary built — ${Object.keys(summary.categoryTotals).length} categories.`);
+  return summary;
 }
 
 module.exports = { flush, buildSummary };
