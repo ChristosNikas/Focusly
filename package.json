@@ -1,7 +1,7 @@
 {
-  "name": "companion-app",
+  "name": "focusly",
   "version": "1.0.0",
-  "description": "",
+  "description": "Focusly — Track your focus and app usage",
   "main": "src/main.js",
   "dependencies": {
     "abbrev": "^1.1.1",
@@ -43,6 +43,7 @@
     "dot-prop": "^10.1.0",
     "dotenv": "^17.3.1",
     "eastasianwidth": "^0.2.0",
+    "electron-squirrel-startup": "^1.0.1",
     "electron-store": "^11.0.2",
     "emoji-regex": "^9.2.2",
     "encoding": "^0.1.13",
@@ -183,7 +184,9 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "electron ."
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make"
   },
   "repository": {
     "type": "git",
@@ -197,6 +200,14 @@
   },
   "homepage": "https://github.com/ChristosNikas/CompanionApp#readme",
   "devDependencies": {
+    "@electron-forge/cli": "^7.11.1",
+    "@electron-forge/maker-deb": "^7.11.1",
+    "@electron-forge/maker-rpm": "^7.11.1",
+    "@electron-forge/maker-squirrel": "^7.11.1",
+    "@electron-forge/maker-zip": "^7.11.1",
+    "@electron-forge/plugin-auto-unpack-natives": "^7.11.1",
+    "@electron-forge/plugin-fuses": "^7.11.1",
+    "@electron/fuses": "^1.8.0",
     "electron": "^40.6.1",
     "tailwindcss": "^4.2.1"
   }
