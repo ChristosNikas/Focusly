@@ -25,7 +25,7 @@ function start() {
 
         if (['gnome-shell', 'gjs'].includes(parsed.app.toLowerCase())) continue;
 
-        const cat = getCategory(parsed.app);
+        const cat = getCategory(parsed.app, parsed.windowTitle);
 
         const event = {
           app:           parsed.app,

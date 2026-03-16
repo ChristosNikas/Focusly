@@ -23,15 +23,20 @@ function saveCategories(categories) {
   }
 }
 
-function getCategory(appName) {
+function getCategory(appName, windowTitle = '') {
   const categories = loadCategories();
-  const lower = appName.toLowerCase();
+  const lowerApp   = appName.toLowerCase();
+  const lowerTitle = windowTitle.toLowerCase();
+
   for (const cat of categories) {
-    if (cat.apps.some(a => lower.includes(a.toLowerCase()))) {
+    if (cat.apps.some(a => {
+      const la = a.toLowerCase();
+      return lowerApp.includes(la) || lowerTitle.includes(la);
+    })) {
       return { name: cat.name, color: cat.color };
     }
   }
-  return { name: 'Uncategorized', color: '#4a4a5a' };
+  return { name: 'Other', color: '#4a4a5a' };
 }
 
 module.exports = { loadCategories, saveCategories, getCategory };

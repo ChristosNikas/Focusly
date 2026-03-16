@@ -123,9 +123,19 @@ function addApp() {
   const input = document.getElementById('new-app-input');
   const name  = input.value.trim().toLowerCase();
   if (!name) return;
+
+  // Remove from all other categories first
+  categories.forEach((cat, i) => {
+    if (i !== selectedIndex) {
+      cat.apps = cat.apps.filter(a => a.toLowerCase() !== name);
+    }
+  });
+
+  // Add to selected category if not already there
   if (!categories[selectedIndex].apps.includes(name)) {
     categories[selectedIndex].apps.push(name);
   }
+
   input.value = '';
   renderCategories();
   renderApps();
